@@ -1,8 +1,37 @@
-﻿@{
+﻿@model HomeViewModel;
+@using Microsoft.AspNetCore.Identity;
+@using AwesomeNetwork.Models;
+@using AwesomeNetwork.DAL.Models;
+@using AwesomeNetwork.ViewModels;
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager;
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@if (SignInManager.IsSignedIn(User))
+{
+        <div>Hello @User.Identity!</div>
+}
+else
+{
+
+
+        <div class="row">
+            <div class="side">
+                <div class="center">
+                    Пользуйтесь нашей самой крутой соцсетью! Регистрируйтесь всего за 2 минуты, делитесь мыслями, находите новых друзей.
+                </div>
+                <img class="main-img" src="http://pngimg.com/uploads/husky/husky_PNG19.png" />
+            </div>
+
+
+            <div class="main">
+                <partial name="Login" model="Model.LoginView" />
+                <partial name="Register" model="Model.RegisterView"/>
+            </div>
+
+        </div>
+
+}

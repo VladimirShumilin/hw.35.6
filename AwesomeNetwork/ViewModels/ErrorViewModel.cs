@@ -1,6 +1,6 @@
 using System;
 
-namespace AwesomeNetwork.Models
+namespace AwesomeNetwork.ViewModels
 {
     public class ErrorViewModel
     {
