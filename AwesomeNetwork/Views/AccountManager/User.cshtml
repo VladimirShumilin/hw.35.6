@@ -57,14 +57,14 @@
                                     @user.GetFullName()
                                 </div>
                                 <div class="mrgn center-align">
-                                     <form asp-controller="UserManagement" asp-action="Chat" asp-route-id="@user.Id" method="post">
+                                    <form asp-controller="AccountManager" asp-action="Chat" asp-route-id="@user.Id" method="post">
                                         <button type="submit" class="btn btn-sm btn-primary min-width-but">
                                             Чат
                                         </button>
                                     </form>
                                 </div>
                                 <div class="mrgn center-align">
-                                     <form asp-controller="UserManagement" asp-action="DeleteFriend" asp-route-id="@user.Id" method="post">
+                                    <form asp-controller="AccountManager" asp-action="DeleteFriend" asp-route-id="@user.Id" method="post">
                                         <button type="submit" class="btn btn-sm btn-primary min-width-but">
                                             Удалить из друзей
                                         </button>

@@ -100,8 +100,7 @@ namespace AwesomeNetwork.Controllers
 
 
         [Route("Logout")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
@@ -214,8 +213,6 @@ namespace AwesomeNetwork.Controllers
             return RedirectToAction("MyPage", "AccountManager");
 
         }
-
-
 
         [Authorize]
         [Route("Update")]
