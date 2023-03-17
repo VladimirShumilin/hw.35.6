@@ -14,7 +14,7 @@ namespace AwesomeNetwork.DAL
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-           // Database.EnsureCreated();
+            Database.EnsureCreated();
             Database.Migrate();
         }
 

@@ -18,12 +18,12 @@ namespace AwesomeNetwork.Controllers
     [Route("[controller]")]
     public class AccountManagerController : Controller
     {
-        private IMapper _mapper;
+        private readonly IMapper _mapper;
 
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
 
-        private IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
         public AccountManagerController(UserManager<User> userManager, SignInManager<User> signInManager, IMapper mapper, IUnitOfWork unitOfWork)
         {
@@ -66,8 +66,7 @@ namespace AwesomeNetwork.Controllers
         {
             return View(new LoginViewModel { ReturnUrl = returnUrl });
         }
-
-       
+    
         [Route("Login")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -99,6 +98,7 @@ namespace AwesomeNetwork.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+
         [Route("Logout")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -119,7 +119,7 @@ namespace AwesomeNetwork.Controllers
 
             var model = new UserViewModel(result);
 
-            model.Friends = await GetAllFriend(model.User);
+            model.Friends =  GetAllFriend(model.User);
 
             return View("User", model);
         }
@@ -150,7 +150,7 @@ namespace AwesomeNetwork.Controllers
             list.ForEach(x =>
             {
                 var t = _mapper.Map<UserWithFriendExt>(x);
-                t.IsFriendWithCurrent = withfriend.Where(y => y.Id == x.Id || x.Id == result.Id).Count() != 0;
+                t.IsFriendWithCurrent = withfriend.Where(y => y.Id == x.Id || x.Id == result.Id).Any();
                 data.Add(t);
             });
 
@@ -172,11 +172,11 @@ namespace AwesomeNetwork.Controllers
 
             return repository.GetFriendsByUser(result);
         }
-        private async Task<List<User>> GetAllFriend(User user)
+        private List<User> GetAllFriend(User user)
         {
             var repository = _unitOfWork.GetRepository<Friend>() as FriendsRepository;
 
-            return repository.GetFriendsByUser(user);
+            return  repository.GetFriendsByUser(user);
         }
 
         [Route("AddFriend")]
@@ -217,49 +217,43 @@ namespace AwesomeNetwork.Controllers
 
 
 
-        //[Authorize]
-        //[Route("Update")]
-        //[HttpPost]
-        //public async Task<IActionResult> Update(UserEditViewModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var user = await _userManager.FindByIdAsync(model.UserId);
-
-        //        user.Upadte(model);
-
-
-        //        var result = await _userManager.UpdateAsync(user);
-        //        if (result.Succeeded)
-        //        {
-        //            return RedirectToAction("MyPage", "AccountManager");
-        //        }
-        //        else
-        //        {
-        //            return RedirectToAction("Edit", "AccountManager");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        ModelState.AddModelError("", "Некорректные данные");
-        //        return View("Edit", model);
-        //    }
-        //}
+        [Authorize]
+        [Route("Update")]
+        [HttpPost]
+        public async Task<IActionResult> Update(UserEditViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByIdAsync(model.UserId);
+                _mapper.Map<UserEditViewModel, User>(model, user);
+                var result = await _userManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("MyPage", "AccountManager");
+                }
+                else
+                {
+                    return RedirectToAction("Edit", "AccountManager");
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("", "Некорректные данные");
+                return View("Edit", model);
+            }
+        }
 
 
 
 
 
-        //[Route("UserList")]
-        //[HttpGet]
-        //public async Task<IActionResult> UserList(string search)
-        //{
-        //    var model = await CreateSearch(search);
-        //    return View("UserList", model);
-        //}
-
-
-
+        [Route("UserList")]
+        [HttpGet]
+        public async Task<IActionResult> UserList(string search)
+        {
+            var model = await CreateSearch(search);
+            return View("UserList", model);
+        }
 
         [Route("Chat")]
         [HttpPost]

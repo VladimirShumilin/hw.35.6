@@ -11,7 +11,7 @@ namespace AwesomeNetwork.DAL
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private ApplicationDbContext _appContext;
+        private  ApplicationDbContext _appContext;
 
         private Dictionary<Type, object> _repositories;
 
@@ -19,18 +19,28 @@ namespace AwesomeNetwork.DAL
         {
             this._appContext = app;
         }
-
+        
         public void Dispose()
         {
-           
+            //Dispose(true);
+            //GC.SuppressFinalize(this);
         }
+
+        //protected virtual void Dispose(bool disposing)
+        //{
+        //    if (disposing)
+        //    {
+        //        if (_appContext != null)
+        //        {
+        //            _appContext.Dispose();
+        //            _appContext = null;
+        //        }
+        //    }
+        //}
 
         public IRepository<TEntity> GetRepository<TEntity>(bool hasCustomRepository = true) where TEntity : class
         {
-            if (_repositories == null)
-            {
-                _repositories = new Dictionary<Type, object>();
-            }
+            _repositories ??= new Dictionary<Type, object>();
 
             if (hasCustomRepository)
             {
@@ -52,7 +62,7 @@ namespace AwesomeNetwork.DAL
         }
         public int SaveChanges(bool ensureAutoHistory = false)
         {
-            throw new NotImplementedException();
+            return _appContext.SaveChanges(ensureAutoHistory);
         }
     }
 }

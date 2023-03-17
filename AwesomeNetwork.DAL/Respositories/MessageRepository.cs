@@ -27,8 +27,8 @@ namespace AwesomeNetwork.DAL.Repository
             var itog = new List<Message>();
             itog.AddRange(from);
             itog.AddRange(to);
-            itog.OrderBy(x => x.Id);
-            return itog;
+            
+            return itog.OrderBy(x => x.Id).ToList();
         }
     }
 }
