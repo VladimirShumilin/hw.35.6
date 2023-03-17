@@ -34,6 +34,5 @@ namespace AwesomeNetwork.DAL.Models
             Status = "Ура! Я в соцсети!";
             About = "Информация обо мне.";
         }
-
     }
 }

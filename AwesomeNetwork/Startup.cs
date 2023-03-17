@@ -17,6 +17,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using AwesomeNetwork.Extentions;
 
 
 namespace AwesomeNetwork
@@ -39,10 +40,10 @@ namespace AwesomeNetwork
             var assembly = Assembly.GetAssembly(typeof(MappingProfile));
             services.AddAutoMapper(assembly);
 
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection), ServiceLifetime.Singleton)
-            .AddScoped<IUnitOfWork, UnitOfWork>()
-            .AddScoped<IRepository<Message>, MessageRepository>()
-            .AddScoped<IRepository<Friend>, FriendsRepository>()
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection), ServiceLifetime.Scoped)
+             .AddUnitOfWork()
+             .AddCustomRepository<Message, MessageRepository>()
+             .AddCustomRepository<Friend, FriendsRepository>()
             .AddIdentity<User, IdentityRole>(opts =>
             {
                 opts.Password.RequiredLength = 5;
@@ -50,7 +51,8 @@ namespace AwesomeNetwork
                 opts.Password.RequireLowercase = false;
                 opts.Password.RequireUppercase = false;
                 opts.Password.RequireDigit = false;
-            }).AddEntityFrameworkStores<ApplicationDbContext>(); 
+            }).AddEntityFrameworkStores<ApplicationDbContext>()
+            ; 
             
             services.AddControllersWithViews();
         }
